@@ -1,9 +1,12 @@
 import copy
 import xml.etree.ElementTree as ET
 
-from generator import load_urdf_into_mjcf
-from mjcf_fcn import add_new_worldbody, separate_left_right_collision_groups
-from urdf_fcn import (
+from mujoco_urdf_loader.generator import load_urdf_into_mjcf
+from mujoco_urdf_loader.mjcf_fcn import (
+    add_new_worldbody,
+    separate_left_right_collision_groups,
+)
+from mujoco_urdf_loader.urdf_fcn import (
     add_mujoco_element,
     get_mesh_path,
     get_robot_urdf,

@@ -5,8 +5,9 @@ import mujoco
 import mujoco.viewer
 import numpy as np
 import resolve_robotics_uri_py as rru
-from generator import load_urdf_into_mjcf
-from mjcf_fcn import (
+
+from mujoco_urdf_loader.generator import load_urdf_into_mjcf
+from mujoco_urdf_loader.mjcf_fcn import (
     add_camera,
     add_joint_eq,
     add_joint_pos_sensor,
@@ -15,7 +16,7 @@ from mjcf_fcn import (
     add_position_actuator,
     separate_left_right_collision_groups,
 )
-from urdf_fcn import (
+from mujoco_urdf_loader.urdf_fcn import (
     add_mujoco_element,
     get_mesh_path,
     get_robot_urdf,
