@@ -2,7 +2,7 @@ import xml.etree.ElementTree as ET
 
 import pytest
 
-from models.functions.urdf_fcn import (
+from mujoco_urdf_loader.urdf_fcn import (
     add_mujoco_element,
     get_joint_limits,
     get_mesh_path,

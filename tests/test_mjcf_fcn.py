@@ -2,7 +2,7 @@ import xml.etree.ElementTree as ET
 
 import pytest
 
-from models.functions.mjcf_fcn import (
+from mujoco_urdf_loader.mjcf_fcn import (
     add_camera,
     add_joint_eq,
     add_joint_pos_sensor,

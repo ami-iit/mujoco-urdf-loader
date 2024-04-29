@@ -3,20 +3,21 @@ import xml.etree.ElementTree as ET
 
 import mujoco
 import mujoco.viewer
-from functions.generator import load_urdf_into_mjcf
-from functions.hands_fcn import (
+
+from mujoco_urdf_loader.generator import load_urdf_into_mjcf
+from mujoco_urdf_loader.hands_fcn import (
     add_hand_actuators,
     add_hand_equalities,
     add_wirst_actuators,
     set_thumb_angle,
 )
-from functions.mjcf_fcn import (
+from mujoco_urdf_loader.mjcf_fcn import (
     add_new_worldbody,
     add_position_actuator,
     separate_left_right_collision_groups,
     set_joint_damping,
 )
-from functions.urdf_fcn import (
+from mujoco_urdf_loader.urdf_fcn import (
     add_mujoco_element,
     get_mesh_path,
     get_robot_urdf,
@@ -115,4 +116,5 @@ with tempfile.NamedTemporaryFile(mode="w+") as path_temp_xml:
     data = mujoco.MjData(model)
 
     # Visualize the model
+    mujoco.viewer.launch(model=model, data=data)
     mujoco.viewer.launch(model=model, data=data)
