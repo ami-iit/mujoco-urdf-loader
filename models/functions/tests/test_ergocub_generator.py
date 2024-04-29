@@ -1,8 +1,7 @@
 import xml.etree.ElementTree as ET
 
 import pytest
-
-from src.models import generator
+from models.functions import generator
 
 
 def test_load_urdf_into_mjcf():

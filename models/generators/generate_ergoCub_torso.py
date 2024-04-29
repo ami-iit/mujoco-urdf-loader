@@ -3,20 +3,20 @@ import xml.etree.ElementTree as ET
 
 import mujoco
 import mujoco.viewer
-from generator import load_urdf_into_mjcf
-from hands_fcn import (
+from functions.generator import load_urdf_into_mjcf
+from functions.hands_fcn import (
     add_hand_actuators,
     add_hand_equalities,
     add_wirst_actuators,
     set_thumb_angle,
 )
-from mjcf_fcn import (
+from functions.mjcf_fcn import (
     add_new_worldbody,
     add_position_actuator,
     separate_left_right_collision_groups,
     set_joint_damping,
 )
-from urdf_fcn import (
+from functions.urdf_fcn import (
     add_mujoco_element,
     get_mesh_path,
     get_robot_urdf,

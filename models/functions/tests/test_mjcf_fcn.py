@@ -2,7 +2,7 @@ import xml.etree.ElementTree as ET
 
 import pytest
 
-from src.models.mjcf_fcn import (
+from models.functions.mjcf_fcn import (
     add_camera,
     add_joint_eq,
     add_joint_pos_sensor,
