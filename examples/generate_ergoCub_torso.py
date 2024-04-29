@@ -117,4 +117,3 @@ with tempfile.NamedTemporaryFile(mode="w+") as path_temp_xml:
 
     # Visualize the model
     mujoco.viewer.launch(model=model, data=data)
-    mujoco.viewer.launch(model=model, data=data)
