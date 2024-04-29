@@ -2,7 +2,8 @@ import xml.etree.ElementTree as ET
 from typing import List
 
 import numpy as np
-from mjcf_fcn import add_joint_eq, add_position_actuator
+
+from .mjcf_fcn import add_joint_eq, add_position_actuator
 
 
 def add_hand_equalities(mjcf: ET.Element) -> ET.Element:
@@ -112,4 +113,5 @@ def set_thumb_angle(mjcf: ET.Element, angle: float) -> ET.Element:
                 original_quat[2] = str(float(original_quat[2]) + angle_rad / 2)
             body.set("quat", " ".join(original_quat))
 
+    return mjcf
     return mjcf
