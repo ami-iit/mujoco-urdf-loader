@@ -4,7 +4,6 @@ import xml.etree.ElementTree as ET
 import mujoco
 import mujoco.viewer
 import numpy as np
-import resolve_robotics_uri_py as rru
 
 from mujoco_urdf_loader.generator import load_urdf_into_mjcf
 from mujoco_urdf_loader.hands_fcn import (
@@ -15,9 +14,6 @@ from mujoco_urdf_loader.hands_fcn import (
 )
 from mujoco_urdf_loader.mjcf_fcn import (
     add_camera,
-    add_joint_eq,
-    add_joint_pos_sensor,
-    add_joint_vel_sensor,
     add_new_worldbody,
     add_position_actuator,
     separate_left_right_collision_groups,
@@ -28,8 +24,6 @@ from mujoco_urdf_loader.urdf_fcn import (
     get_mesh_path,
     get_robot_urdf,
     remove_gazebo_elements,
-    remove_links_and_joints_by_keep_list,
-    remove_links_and_joints_by_remove_list,
 )
 
 # Load the robot urdf
