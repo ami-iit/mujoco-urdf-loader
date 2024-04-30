@@ -7,6 +7,12 @@ import numpy as np
 import resolve_robotics_uri_py as rru
 
 from mujoco_urdf_loader.generator import load_urdf_into_mjcf
+from mujoco_urdf_loader.hands_fcn import (
+    add_hand_actuators,
+    add_hand_equalities,
+    add_wirst_actuators,
+    set_thumb_angle,
+)
 from mujoco_urdf_loader.mjcf_fcn import (
     add_camera,
     add_joint_eq,
@@ -15,6 +21,7 @@ from mujoco_urdf_loader.mjcf_fcn import (
     add_new_worldbody,
     add_position_actuator,
     separate_left_right_collision_groups,
+    set_joint_damping,
 )
 from mujoco_urdf_loader.urdf_fcn import (
     add_mujoco_element,
@@ -34,22 +41,6 @@ mesh_path = get_mesh_path(robot_urdf)
 # remove the gazebo elements
 robot_urdf = remove_gazebo_elements(robot_urdf)
 
-# remove the legs
-to_remove = ["leg", "foot", "ankle", "hip", "knee", "sole"]
-to_keep = [
-    "r_hand",
-    "r_wrist",
-    "r_forearm",
-    "r_pinkie",
-    "r_ring",
-    "r_middle",
-    "r_index",
-    "r_thumb",
-]
-
-# robot_urdf =  remove_links_and_joints_by_keep_list(robot_urdf, to_keep=to_keep)
-# robot_urdf = remove_links_and_joints_by_remove_list(robot_urdf, to_remove=to_remove)
-
 # add the mujoco element
 robot_urdf = add_mujoco_element(robot_urdf, mesh_path)
 
@@ -59,99 +50,32 @@ mjcf = load_urdf_into_mjcf(robot_urdf)
 # create a new worldbody, add the robot to it and remove the old worldbody
 add_new_worldbody(mjcf, freeze_root=False)
 
+add_hand_equalities(mjcf)
+set_thumb_angle(mjcf, angle=9 * 5)
+
 # define the hand elements
 hand_elements = ["thumb", "index", "middle", "ring", "pinkie"]
-finger_elements = ["add", "prox", "dist"]
 
-# iterate over the original joints, this is to get the limits of the joints
-for joint in robot_urdf.findall(".//joint"):
-    if "fixed" in joint.attrib["type"]:
-        continue
+# add actuators
+add_hand_actuators(mjcf, hand_elements=hand_elements)
+add_wirst_actuators(mjcf)
 
-    # get the limits of the joint to set the ctrlrange of the actuators
-    limits = joint.find("limit")
-
-    # the hand joints need special care
-    if any(hand_element in joint.attrib["name"] for hand_element in hand_elements):
-        # all dist joints are equal to the prox joint
-        if "dist" in joint.attrib["name"]:
-            add_joint_eq(
-                mjcf,
-                joint1=joint.attrib["name"],
-                joint2=joint.attrib["name"].replace("dist", "prox"),
-            )
-        if "prox" in joint.attrib["name"]:
-            # the pinkie prox joint is equal to the ring prox joint
-            if "pinkie" in joint.attrib["name"]:
-                add_joint_eq(
-                    mjcf,
-                    joint1=joint.attrib["name"],
-                    joint2=joint.attrib["name"].replace("pinkie", "ring"),
-                )
-            else:
-                add_position_actuator(
-                    mjcf,
-                    joint=joint.attrib["name"],
-                    ctrlrange=[limits.attrib["lower"], limits.attrib["upper"]],
-                    kp=10,
-                    group=1 if "r_" in joint.attrib["name"] else 2,
-                    name=joint.attrib["name"].replace("prox", "motor"),
-                )
-                add_joint_pos_sensor(
-                    mjcf,
-                    joint=joint.attrib["name"],
-                    name=joint.attrib["name"].replace("prox", "motor") + "_pos",
-                )
-                add_joint_vel_sensor(
-                    mjcf,
-                    joint=joint.attrib["name"],
-                    name=joint.attrib["name"].replace("prox", "motor") + "_vel",
-                )
-        if "add" in joint.attrib["name"]:
-            add_position_actuator(
-                mjcf,
-                joint=joint.attrib["name"],
-                ctrlrange=[limits.attrib["lower"], limits.attrib["upper"]],
-                kp=10,
-                group=1 if "r_" in joint.attrib["name"] else 2,
-                name=joint.attrib["name"] + "_motor",
-            )
-            add_joint_pos_sensor(
-                mjcf,
-                joint=joint.attrib["name"],
-                name=joint.attrib["name"] + "_pos",
-            )
-            add_joint_vel_sensor(
-                mjcf,
-                joint=joint.attrib["name"],
-                name=joint.attrib["name"] + "_vel",
-            )
-        continue
-
-    add_position_actuator(
-        mjcf,
-        joint=joint.attrib["name"],
-        ctrlrange=[limits.attrib["lower"], limits.attrib["upper"]],
-        kp=1000,
-        name=joint.attrib["name"] + "_motor",
-    )
-    add_joint_pos_sensor(
-        mjcf,
-        joint=joint.attrib["name"],
-        name=joint.attrib["name"] + "_pos",
-    )
-    add_joint_vel_sensor(
-        mjcf,
-        joint=joint.attrib["name"],
-        name=joint.attrib["name"] + "_vel",
-    )
-
-# lower the damping from the hand joints
 for joint in mjcf.findall(".//body/joint"):
-    if any(hand_element in joint.attrib["name"] for hand_element in hand_elements):
-        joint.set("damping", "0.005")
-    else:
-        joint.set("damping", "2")
+    if not any(
+        joint_element in joint.attrib["name"] for joint_element in hand_elements
+    ):
+        ctrlrange = joint.attrib["range"]
+        add_position_actuator(
+            mjcf,
+            joint=joint.attrib["name"],
+            ctrlrange=[float(ctrlrange.split()[0]), float(ctrlrange.split()[1])],
+            kp=1000,
+            name=joint.attrib["name"] + "_motor",
+        )
+
+# set the damping
+set_joint_damping(mjcf, damping=2)
+set_joint_damping(mjcf, subset=hand_elements, damping=0.005)
 
 # add camera to the robot
 for body in mjcf.findall(".//body"):

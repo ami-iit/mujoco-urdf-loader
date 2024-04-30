@@ -48,7 +48,7 @@ add_new_worldbody(mjcf_torso, freeze_root=True)
 
 add_hand_equalities(mjcf_torso)
 
-# set_thumb_angle(mjcf_torso, angle=9 * 5)
+set_thumb_angle(mjcf_torso, angle=9 * 5)
 
 hand_elements = ["thumb", "index", "middle", "ring", "pinkie"]
 
