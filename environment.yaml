@@ -1,0 +1,9 @@
+name: mujocoloaderenv
+channels:
+  - conda-forge
+dependencies:
+  - mujoco-python
+  - mujoco-simulate
+  - mujoco-samples
+  - pytest
+  - resolve-robotics-uri-py
