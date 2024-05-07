@@ -1,6 +1,6 @@
 # mujoco-urdf-loader
 
-This repository contains a collection of scripts for generating MuJoCo (MJCF) files from Universal Robot Description Format (URDF) files. The scripts are designed to work with the [ergoCub](https://ergocub.eu/) robot. 
+This repository contains a collection of scripts for generating MuJoCo (MJCF) files from Unified Robot Description Format (URDF) files. The scripts are designed to work with the [ergoCub](https://ergocub.eu/) robot. 
 
 ### Installation
 
