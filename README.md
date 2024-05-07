@@ -22,7 +22,7 @@ Then, install the package in editable mode:
 pip install -e .
 ```
 
-**Note:** To run the examples, you need a superbuild active to allow `resolve_robotics_uri_py` to find the original URDF files.
+**Note:** To run the examples, you need to install [`ergocub-software`](https://github.com/icub-tech-iit/ergocub-software) to allow `resolve_robotics_uri_py` to find the original URDF files. This can be done by installing the `ergocub-software` conda package.
 
 ### Examples
 
