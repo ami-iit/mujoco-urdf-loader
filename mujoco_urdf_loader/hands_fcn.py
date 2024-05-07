@@ -72,7 +72,7 @@ def add_hand_actuators(mjcf: ET.Element, hand_elements: List[str]) -> ET.Element
     return mjcf
 
 
-def add_wirst_actuators(mjcf: ET.Element) -> ET.Element:
+def add_wrist_actuators(mjcf: ET.Element) -> ET.Element:
     """Add the wrist actuators to the mjcf file.
 
     Args:

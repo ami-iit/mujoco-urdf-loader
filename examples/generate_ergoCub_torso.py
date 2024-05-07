@@ -8,7 +8,7 @@ from mujoco_urdf_loader.generator import load_urdf_into_mjcf
 from mujoco_urdf_loader.hands_fcn import (
     add_hand_actuators,
     add_hand_equalities,
-    add_wirst_actuators,
+    add_wrist_actuators,
     set_thumb_angle,
 )
 from mujoco_urdf_loader.mjcf_fcn import (
@@ -54,7 +54,7 @@ hand_elements = ["thumb", "index", "middle", "ring", "pinkie"]
 
 # add actuators
 add_hand_actuators(mjcf_torso, hand_elements=hand_elements)
-add_wirst_actuators(mjcf_torso)
+add_wrist_actuators(mjcf_torso)
 
 for joint in mjcf_torso.findall(".//body/joint"):
     if not any(

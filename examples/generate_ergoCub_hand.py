@@ -9,7 +9,7 @@ from mujoco_urdf_loader.generator import load_urdf_into_mjcf
 from mujoco_urdf_loader.hands_fcn import (
     add_hand_actuators,
     add_hand_equalities,
-    add_wirst_actuators,
+    add_wrist_actuators,
     set_thumb_angle,
 )
 from mujoco_urdf_loader.mjcf_fcn import (
@@ -62,7 +62,7 @@ hand_elements = ["thumb", "index", "middle", "ring", "pinkie"]
 
 add_hand_actuators(mjcf_hand, hand_elements=hand_elements)
 
-add_wirst_actuators(mjcf_hand)
+add_wrist_actuators(mjcf_hand)
 
 set_joint_damping(mjcf_hand, subset=hand_elements, damping=0.005)
 
