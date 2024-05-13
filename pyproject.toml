@@ -40,7 +40,7 @@ all = ["mujoco-urdf-loader[development,testing]"]
 
 
 [tool.setuptools.package-data]
-mujoco_urdf_loader = ["*.yaml", ".urdf"]
+mujoco_urdf_loader = ["*.yaml", "*.urdf"]
 
 [tool.setuptools.packages.find]
 namespaces = false
