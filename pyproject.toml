@@ -1,0 +1,56 @@
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = ["wheel", "setuptools>=60", "setuptools_scm[toml]>=8.0"]
+
+[project]
+name = "mujoco-urdf-loader"
+dynamic = ["version"]
+description = "A simple URDF to MJCF converter for MuJoCo, part of the ergoCub project."
+keywords = ["mujoco", "urdf", "robotics", "simulation", "physics"]
+license.file = "LICENSE"
+authors = [{ name = "Giovanni Fregonese", email = "giotherobot@gmail.com" }]
+maintainers = [{ name = "Giovanni Fregonese", email = "giotherobot@gmail.com" }]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Games/Entertainment :: Simulation",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Physics",
+]
+requires-python = ">= 3.10"
+dependencies = ["mujoco", "resolve-robotics-uri-py"]
+
+[project.readme]
+file = "README.md"
+content-type = "text/markdown"
+
+[project.urls]
+Repository = "https://github.com/ami-iit/mujoco-urdf-loader"
+
+[project.optional-dependencies]
+development = ["black", "isort", "pre-commit"]
+testing = ["pytest >= 6.0"]
+all = ["mujoco-urdf-loader[development,testing]"]
+
+
+[tool.setuptools.package-data]
+mujoco_urdf_loader = ["*.yaml", "*.urdf"]
+
+[tool.setuptools.packages.find]
+namespaces = false
+
+[tool.setuptools_scm]
+local_scheme = "dirty-tag"
+
+[tool.black]
+line-length = 88
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
