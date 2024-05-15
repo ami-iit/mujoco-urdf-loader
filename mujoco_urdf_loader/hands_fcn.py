@@ -43,16 +43,13 @@ def add_hand_actuators(mjcf: ET.Element, hand_elements: List[str]) -> ET.Element
         if any(
             joint_element in joint.attrib["name"] for joint_element in hand_elements
         ):
-            ctrlrange = joint.attrib["range"]
             if "prox" in joint.attrib["name"] and "pinkie" not in joint.attrib["name"]:
                 add_position_actuator(
                     mjcf,
                     joint=joint.attrib["name"],
-                    ctrlrange=[
-                        float(ctrlrange.split()[0]),
-                        float(ctrlrange.split()[1]),
-                    ],
-                    kp=10,
+                    inheritrange=0.8,
+                    forcerange=[-0.1, 0.1],
+                    kp=0.1,
                     group=1 if "r_" in joint.attrib["name"] else 2,
                     name=joint.attrib["name"].replace("prox", "motor"),
                 )
@@ -60,11 +57,9 @@ def add_hand_actuators(mjcf: ET.Element, hand_elements: List[str]) -> ET.Element
                 add_position_actuator(
                     mjcf,
                     joint=joint.attrib["name"],
-                    ctrlrange=[
-                        float(ctrlrange.split()[0]),
-                        float(ctrlrange.split()[1]),
-                    ],
-                    kp=10,
+                    inheritrange=0.8,
+                    forcerange=[-0.1, 0.1],
+                    kp=0.1,
                     group=1 if "r_" in joint.attrib["name"] else 2,
                     name=joint.attrib["name"] + "_motor",
                 )
@@ -82,12 +77,11 @@ def add_wrist_actuators(mjcf: ET.Element) -> ET.Element:
 
     for joint in mjcf.findall(".//body/joint"):
         if "wrist" in joint.attrib["name"]:
-            ctrlrange = joint.attrib["range"]
             add_position_actuator(
                 mjcf,
                 joint=joint.attrib["name"],
-                ctrlrange=[float(ctrlrange.split()[0]), float(ctrlrange.split()[1])],
-                kp=100,
+                inheritrange=0.8,
+                kp=1,
                 group=1 if "r_" in joint.attrib["name"] else 2,
                 name=joint.attrib["name"] + "_motor",
             )
@@ -113,5 +107,4 @@ def set_thumb_angle(mjcf: ET.Element, angle: float) -> ET.Element:
                 original_quat[2] = str(float(original_quat[2]) + angle_rad / 2)
             body.set("quat", " ".join(original_quat))
 
-    return mjcf
     return mjcf

@@ -45,6 +45,8 @@ def add_position_actuator(
     mjcf: ET.Element,
     joint: str,
     ctrlrange: List[float] = None,
+    inheritrange: float = None,
+    forcerange: List[float] = None,
     kp: float = 10,
     group: int = 0,
     name: str = None,
@@ -59,10 +61,6 @@ def add_position_actuator(
         group (int): The group of the actuator (default: 0).
         name (str): The name of the actuator (default: f"{joint}_motor").
     """
-
-    # check if the ctrlrange is None
-    if ctrlrange is None:
-        ctrlrange = [-1, 1]
 
     # check if there already is an actuator element in the mjcf
     if mjcf.find(".//actuator") is None:
@@ -80,7 +78,12 @@ def add_position_actuator(
     motor = ET.SubElement(actuators, "position")
     motor.set("joint", joint)
     motor.set("name", name if name is not None else f"{joint}_motor")
-    motor.set("ctrlrange", f"{ctrlrange[0]} {ctrlrange[1]}")
+    if ctrlrange is not None:
+        motor.set("ctrlrange", f"{ctrlrange[0]} {ctrlrange[1]}")
+    elif inheritrange is not None:
+        motor.set("inheritrange", str(inheritrange))
+    if forcerange is not None:
+        motor.set("forcerange", f"{forcerange[0]} {forcerange[1]}")
     motor.set("kp", str(kp))
     motor.set("group", str(group))
 
