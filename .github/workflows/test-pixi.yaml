@@ -21,10 +21,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        # Windows disabled as a workaround for https://github.com/ami-iit/mujoco-urdf-loader/issues/11
         os: [
           ubuntu-24.04,
-          macos-latest,
-          windows-2022
+          macos-latest
         ]
     steps:
     - uses: actions/checkout@v4
