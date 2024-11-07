@@ -43,5 +43,5 @@ jobs:
       run: pixi info
 
     - name: Build and test the project
-      run: pixi run test
+      run: pixi run -e testing test
   
