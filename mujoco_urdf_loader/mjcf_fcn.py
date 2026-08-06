@@ -685,6 +685,56 @@ def add_equality_constraints_for_sites(
     return mjcf
 
 
+def add_equality_constraints_for_joints(
+    mjcf: ET.Element,
+    joint_pairs: List[tuple],
+    constraint_type: str = "joint",
+    polycoef: List[float] = None,
+) -> ET.Element:
+    """
+    Add equality constraints between pairs of joints in MJCF.
+
+    Args:
+        mjcf (ET.Element): The MJCF file as ElementTree.
+        joint_pairs (List[tuple]): List of tuples with (joint1_name, joint2_name) to connect.
+        constraint_type (str): Type of constraint - "joint" or "distance" (default: "joint").
+        polycoef (List[float], optional): Polynomial coefficients for the joint equality constraints.
+
+    Returns:
+        ET.Element: The modified MJCF element.
+    """
+    # Find or create the equality element
+    equality = mjcf.find("equality")
+    if equality is None:
+        equality = ET.SubElement(mjcf, "equality")
+
+    for i, (joint1, joint2) in enumerate(joint_pairs):
+        # Verify both joints exist
+        joint1_elem = mjcf.find(f".//joint[@name='{joint1}']")
+        joint2_elem = mjcf.find(f".//joint[@name='{joint2}']")
+
+        if joint1_elem is None:
+            raise ValueError(f"Joint {joint1} not found in MJCF")
+        if joint2_elem is None:
+            raise ValueError(f"Joint {joint2} not found in MJCF")
+
+        # Create the equality constraint
+        if constraint_type == "joint":
+            constraint = ET.SubElement(equality, "joint")
+            constraint.set("joint1", joint1)
+            constraint.set("joint2", joint2)
+            if polycoef is not None:
+                constraint.set("polycoef", " ".join(map(str, polycoef)))
+        else:
+            raise ValueError(f"Unknown constraint type: {constraint_type}")
+
+        print(
+            f"Created {constraint_type} equality constraint between {joint1} and {joint2}"
+        )
+
+    return mjcf
+
+
 def add_force_torque_sensor(
     mjcf: ET.Element,
     joint: str,
