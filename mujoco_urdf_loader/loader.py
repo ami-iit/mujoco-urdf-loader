@@ -607,7 +607,7 @@ class URDFtoMuJoCoLoader:
                 "EqualityConstraintCfg or a dict with keys site1 and site2."
             )
 
-        constraint_type = eq_cfg.get("constraint_type")
+        constraint_type = eq_cfg.get("constraint_type", "connect")
         name = eq_cfg.get("name")
         site1 = eq_cfg.get("site1")
         site2 = eq_cfg.get("site2")
