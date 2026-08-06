@@ -613,6 +613,7 @@ def add_equality_constraints_for_sites(
     constraint_type: str = "connect",
     solimp: List[float] = None,
     solref: List[float] = None,
+    name: str = None,
 ) -> ET.Element:
     """
     Add equality constraints between pairs of sites in MJCF.
@@ -646,6 +647,8 @@ def add_equality_constraints_for_sites(
         if constraint_type == "connect":
             # Connect constraint directly references sites (no anchor needed for sites)
             constraint = ET.SubElement(equality, "connect")
+            if name is not None:
+                constraint.set("name", name)
             constraint.set("site1", site1)
             constraint.set("site2", site2)
             if solimp is not None:
@@ -669,6 +672,8 @@ def add_equality_constraints_for_sites(
                 )
 
             constraint = ET.SubElement(equality, "weld")
+            if name is not None:
+                constraint.set("name", name)
             constraint.set("body1", body1)
             constraint.set("body2", body2)
             if solimp is not None:
@@ -690,6 +695,7 @@ def add_equality_constraints_for_joints(
     joint_pairs: List[tuple],
     constraint_type: str = "joint",
     polycoef: List[float] = None,
+    name: str = None,
 ) -> ET.Element:
     """
     Add equality constraints between pairs of joints in MJCF.
@@ -721,6 +727,8 @@ def add_equality_constraints_for_joints(
         # Create the equality constraint
         if constraint_type == "joint":
             constraint = ET.SubElement(equality, "joint")
+            if name is not None:
+                constraint.set("name", f"{name}")
             constraint.set("joint1", joint1)
             constraint.set("joint2", joint2)
             if polycoef is not None:

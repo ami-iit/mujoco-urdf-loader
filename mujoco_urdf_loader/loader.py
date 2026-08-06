@@ -74,6 +74,7 @@ class EqualityConstraintCfg:
     """Configuration for a connect/weld equality constraint between two sites."""
 
     constraint_type: str = "connect"
+    name: Optional[str] = None
     site1: Optional[str] = None
     site2: Optional[str] = None
     joint1: Optional[str] = None
@@ -607,6 +608,7 @@ class URDFtoMuJoCoLoader:
             )
 
         constraint_type = eq_cfg.get("constraint_type")
+        name = eq_cfg.get("name")
         site1 = eq_cfg.get("site1")
         site2 = eq_cfg.get("site2")
         joint1 = eq_cfg.get("joint1")
@@ -621,19 +623,22 @@ class URDFtoMuJoCoLoader:
                 "constraint_type must be either 'connect', 'weld', or 'joint'. "
                 f"Got: {constraint_type}"
             )
-        
+
         if constraint_type == "connect" and (site1 is None or site2 is None):
             raise ValueError(
                 "Each equality constraint configuration requires site1 and site2."
             )
-        
-        if constraint_type == "joint" and (joint1 is None or joint2 is None or polycoef is None):
+
+        if constraint_type == "joint" and (
+            joint1 is None or joint2 is None or polycoef is None
+        ):
             raise ValueError(
                 "Each equality constraint configuration requires joint1, joint2, and polycoef "
                 "when constraint_type is 'joint'."
             )
 
         return EqualityConstraintCfg(
+            name=name,
             site1=site1,
             site2=site2,
             joint1=joint1,
@@ -652,8 +657,9 @@ class URDFtoMuJoCoLoader:
     ):
         """Add equality constraints (connect/weld) to the MJCF model.
 
-        Uses the existing ``add_equality_constraints_for_sites`` helper to
-        create ``<connect>`` or ``<weld>`` elements inside ``<equality>``.
+        Uses the existing ``add_equality_constraints_for_sites`` and
+        ``add_equality_constraints_for_joints`` helpers to create ``<connect>``, ``<weld>``, or
+        ``<joint>`` elements inside ``<equality>``.
 
         Args:
             equality_constraints_cfg: List of ``EqualityConstraintCfg``
@@ -672,6 +678,7 @@ class URDFtoMuJoCoLoader:
             normalized = self._normalize_equality_constraint_cfg(cfg)
             if normalized.constraint_type in ["connect", "weld"]:
                 group_key = (
+                    normalized.name,
                     normalized.constraint_type,
                     tuple(normalized.solimp) if normalized.solimp is not None else None,
                     tuple(normalized.solref) if normalized.solref is not None else None,
@@ -681,27 +688,39 @@ class URDFtoMuJoCoLoader:
                 )
             elif normalized.constraint_type == "joint":
                 group_key = (
+                    normalized.name,
                     normalized.constraint_type,
-                    tuple(normalized.polycoef) if normalized.polycoef is not None else None,
+                    (
+                        tuple(normalized.polycoef)
+                        if normalized.polycoef is not None
+                        else None
+                    ),
                 )
                 by_joints_group.setdefault(group_key, []).append(
                     (normalized.joint1, normalized.joint2)
                 )
 
-        for (constraint_type, solimp, solref), site_pairs in by_sites_group.items():
+        for (
+            name,
+            constraint_type,
+            solimp,
+            solref,
+        ), site_pairs in by_sites_group.items():
             add_equality_constraints_for_sites(
                 self.mjcf,
                 site_pairs,
                 constraint_type=constraint_type,
                 solimp=list(solimp) if solimp is not None else None,
                 solref=list(solref) if solref is not None else None,
+                name=name,
             )
-        for (constraint_type, polycoef), joint_pairs in by_joints_group.items():
+        for (name, constraint_type, polycoef), joint_pairs in by_joints_group.items():
             add_equality_constraints_for_joints(
                 self.mjcf,
                 joint_pairs,
                 constraint_type=constraint_type,
                 polycoef=list(polycoef) if polycoef is not None else None,
+                name=name,
             )
 
     @staticmethod
